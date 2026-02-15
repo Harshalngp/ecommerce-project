@@ -119,6 +119,11 @@
   margin-left: 3px;
 }
 
+.checkout-page .product-quantity .quantity-input {
+  width: 50px;
+  margin-left: 5px;
+}
+
 @media (max-width: 1000px) {
   .checkout-page .delivery-options {
     /* grid-column: 1 means this element will be placed
