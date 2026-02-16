@@ -27,7 +27,8 @@ export function Product({ product, loadCart }) {
     };
 
     return (
-        <div className="product-container">
+        <div className="product-container"
+            data-testid="product-container">
             <div className="product-image-container">
                 <img className="product-image"
                     data-testid="product-image"
@@ -69,7 +70,7 @@ export function Product({ product, loadCart }) {
 
             <div className="product-spacer"></div>
 
-            <div className="added-to-cart" style={{opacity: showAddedMessage ? 1 : 0}}>
+            <div className="added-to-cart" style={{ opacity: showAddedMessage ? 1 : 0 }}>
                 <img src={CheckmarkIcon} />
                 Added
             </div>
