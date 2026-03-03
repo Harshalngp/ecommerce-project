@@ -7,6 +7,7 @@ import { OrdersPage } from './pages/orders/OrdersPage'
 import { TrackingPage } from './pages/TrackingPage'
 import NotFoundPage from './pages/NotFoundPage'
 import './App.css'
+import { AuthPage } from './pages/AuthPage';
 
 // This makes axios available in the Console.
 // - Then, you can try running axios.post('/api/reset') in the Console.
@@ -40,7 +41,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<HomePage cart={cart} loadCart={loadCart} />} />
+        <Route path="/" element={<AuthPage />} />
+        <Route path="/home" element={<HomePage cart={cart} loadCart={loadCart} />} />
         <Route path="/checkout" element={<CheckoutPage cart={cart} loadCart={loadCart} />} />
         <Route path="/orders" element={<OrdersPage cart={cart} loadCart={loadCart} />} />
         <Route path="/tracking/:orderId/:productId" element={<TrackingPage cart={cart} />} />
