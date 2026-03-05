@@ -1,14 +1,35 @@
 import { NavLink, useNavigate, useSearchParams } from 'react-router';
+import { useState, useEffect } from 'react';
 import CartIcon from '../assets/images/icons/cart-icon.png';
 import SearchIcon from '../assets/images/icons/search-icon.png';
 import LogoWhite from '../assets/images/logo-white.png';
 import MobileLogoWhite from '../assets/images/mobile-logo-white.png';
 import './header.css';
-import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 export function Header({ cart }) {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const { isAuthenticated, logout, user } = useAuth();
+    const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+    // derive a simple display name, prefer username over email prefix
+    const getDisplayName = (user) => {
+        if (!user) return '';
+        const name = user.username || user.name || user.email || '';
+        return name.includes('@') ? name.split('@')[0] : name;
+    };
+
+    // close dropdown when clicking outside
+    useEffect(() => {
+        const handleClick = (e) => {
+            if (!e.target.closest('.user-menu-container')) {
+                setUserMenuOpen(false);
+            }
+        };
+        document.addEventListener('click', handleClick);
+        return () => document.removeEventListener('click', handleClick);
+    }, []);
 
     const searchText = searchParams.get('search');
 
@@ -52,16 +73,49 @@ export function Header({ cart }) {
             </div>
 
             <div className="right-section">
-                <NavLink className="orders-link header-link" to="/orders">
+                {isAuthenticated && user && (
+                    <>
+                        <NavLink className="orders-link header-link" to="/orders">
+                            <span className="orders-text">Orders</span>
+                        </NavLink>
 
-                    <span className="orders-text">Orders</span>
-                </NavLink>
+                        <NavLink className="cart-link header-link" to="/checkout">
+                            <img className="cart-icon" src={CartIcon} />
+                            <div className="cart-quantity">{totalQuantity}</div>
+                            <div className="cart-text">Cart</div>
+                        </NavLink>
 
-                <NavLink className="cart-link header-link" to="/checkout">
-                    <img className="cart-icon" src={CartIcon} />
-                    <div className="cart-quantity">{totalQuantity}</div>
-                    <div className="cart-text">Cart</div>
-                </NavLink>
+
+                        {/* user icon at far right; clicking shows username */}
+                        <div className="user-menu-container">
+                            <button
+                                className="user-icon-button"
+                                onClick={() => setUserMenuOpen((o) => !o)}
+                                title="User menu"
+                            >
+                                👤
+                            </button>
+                            {userMenuOpen && (
+                                <div className="user-dropdown">
+                                    {/* only show username/handle, no email/fullname */}
+                                    <div className="user-dropdown-item">
+                                        Hello, {getDisplayName(user)}
+                                    </div>
+                                    <button
+                                        className="user-dropdown-item logout-dropdown"
+                                        onClick={() => {
+                                            setUserMenuOpen(false);
+                                            logout();
+                                            navigate('/');
+                                        }}
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

@@ -1,18 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      // more specific path first
       '/api': {
-        'target': 'http://localhost:3000'
+        target: 'https://localhost:44327',   // your IIS‑Express port
+        changeOrigin: true,
+        secure: false                           // ignore self‑signed cert
       },
       '/images': {
-        'target': 'http://localhost:3000'
+        target: 'http://localhost:3000'
       }
     }
   }
 })
- 

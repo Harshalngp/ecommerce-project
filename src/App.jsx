@@ -8,6 +8,8 @@ import { TrackingPage } from './pages/TrackingPage'
 import NotFoundPage from './pages/NotFoundPage'
 import './App.css'
 import { AuthPage } from './pages/AuthPage';
+import { AuthProvider } from './context/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 // This makes axios available in the Console.
 // - Then, you can try running axios.post('/api/reset') in the Console.
@@ -39,16 +41,44 @@ function App() {
   }, []);
 
   return (
-    <>
+    <AuthProvider>
       <Routes>
         <Route path="/" element={<AuthPage />} />
-        <Route path="/home" element={<HomePage cart={cart} loadCart={loadCart} />} />
-        <Route path="/checkout" element={<CheckoutPage cart={cart} loadCart={loadCart} />} />
-        <Route path="/orders" element={<OrdersPage cart={cart} loadCart={loadCart} />} />
-        <Route path="/tracking/:orderId/:productId" element={<TrackingPage cart={cart} />} />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <HomePage cart={cart} loadCart={loadCart} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <CheckoutPage cart={cart} loadCart={loadCart} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <OrdersPage cart={cart} loadCart={loadCart} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tracking/:orderId/:productId"
+          element={
+            <ProtectedRoute>
+              <TrackingPage cart={cart} />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFoundPage cart={cart} />} />
       </Routes>
-    </>
+    </AuthProvider>
   )
 }
 
